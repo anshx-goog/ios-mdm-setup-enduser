@@ -1,0 +1,2080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Executive Mobile Briefing • iOS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Native Word (.docx) generator -->
+  <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    /* Embed-friendly reset: adapts cleanly to any parent iframe or page container */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #0f172a;
+      background-color: transparent;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .embed-wrapper {
+      background-color: #f8fafc;
+      padding: 16px;
+      border-radius: 16px;
+    }
+
+    @media (min-width: 640px) {
+      .embed-wrapper {
+        padding: 24px;
+      }
+    }
+
+    /* True-proportion iPhone Canvas Display (390 x 804 logical px -> ~9:18.55 ratio) */
+    .iphone-canvas {
+      width: 212px;
+      height: auto;
+      aspect-ratio: 390 / 804;
+      display: block;
+      filter: drop-shadow(0 12px 24px rgba(15, 23, 42, 0.16));
+      flex-shrink: 0;
+    }
+
+    .iphone-canvas-sm {
+      width: 194px;
+    }
+  </style>
+</head>
+<body>
+  <div class="embed-wrapper max-w-5xl mx-auto">
+
+    <!-- FILLABLE CUSTOMIZATION FIELDS & FULL-FIDELITY DOCX EXPORT -->
+    <section aria-label="Document Customization" class="mb-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-4 border-b border-slate-100">
+        <div>
+          <h2 class="text-sm font-bold text-slate-900">Customize &amp; Download Briefing (.docx)</h2>
+          <p class="text-xs text-slate-500 mt-0.5">
+            Fill in the details below to update all placeholders across the guide and screenshots, then download as a Word document.
+          </p>
+        </div>
+        <span id="exportStatus" class="text-xs font-medium text-blue-600 hidden"></span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+        <div>
+          <label for="inpOrg" class="block text-xs font-semibold text-slate-700 mb-1">
+            Organization Name
+          </label>
+          <input
+            type="text"
+            id="inpOrg"
+            placeholder="e.g., Acme Corporation"
+            oninput="updatePlaceholders()"
+            class="w-full px-3 py-2 text-sm rounded-lg bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
+          />
+        </div>
+
+        <div>
+          <label for="inpEmail" class="block text-xs font-semibold text-slate-700 mb-1">
+            Work Email Address
+          </label>
+          <input
+            type="text"
+            id="inpEmail"
+            placeholder="e.g., name@company.com"
+            oninput="updatePlaceholders()"
+            class="w-full px-3 py-2 text-sm rounded-lg bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
+          />
+        </div>
+
+        <div>
+          <label for="inpIT" class="block text-xs font-semibold text-slate-700 mb-1">
+            Named IT Contact &amp; Phone / WhatsApp
+          </label>
+          <input
+            type="text"
+            id="inpIT"
+            placeholder="e.g., IT Support Desk (+91 90000 00000)"
+            oninput="updatePlaceholders()"
+            class="w-full px-3 py-2 text-sm rounded-lg bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
+          />
+        </div>
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+        <p class="text-[11px] text-slate-400">
+          All 11 visual step screenshots and live field values are embedded directly into the exported <code>.docx</code> file.
+        </p>
+        <button
+          type="button"
+          id="btnDownloadDocx"
+          onclick="downloadAsDocx()"
+          class="px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-xl bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white shadow-sm transition flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 12l-4-4m4 4l4-4M4 20h16"></path>
+          </svg>
+          <span id="btnDownloadLabel">Download as Word (.docx)</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- EXECUTIVE MOBILE BRIEFING • iOS -->
+    <main id="briefingRoot" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-10">
+
+    <!-- ARTIFACT 2: VISUAL STEP-BY-STEP GUIDE -->
+    <header class="mb-8">
+      <div class="inline-block px-3 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-semibold tracking-wide uppercase mb-2">
+        Executive Mobile Briefing • iOS
+      </div>
+      <h1 contenteditable="true" class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+        Setting Up <span class="ph-org">[Insert Organization Name]</span> Email &amp; Google Apps on Your iPhone
+      </h1>
+      <p contenteditable="true" class="mt-2.5 text-slate-600 text-sm sm:text-base leading-relaxed max-w-3xl">
+        Before your iPhone opens your work Gmail, Calendar, or Google Drive, Apple requires a one-time workplace security pass (called a <strong>Profile</strong>). Follow the six visual steps below—the setup takes about three minutes.
+      </p>
+    </header>
+
+    <div class="space-y-8">
+
+      <!-- ================= STEP 1 ================= -->
+      <article class="step-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex flex-col lg:flex-row gap-8 items-start">
+          <div class="flex-1 space-y-3" contenteditable="true">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-slate-900 text-white font-bold text-sm flex items-center justify-center shrink-0">1</span>
+              <h2 class="text-lg font-bold text-slate-900">Turn on your work account inside Gmail</h2>
+            </div>
+            <p class="text-sm text-slate-700 leading-relaxed">
+              Open the <strong>Gmail</strong> app on your iPhone.
+            </p>
+            <ul class="text-sm text-slate-700 space-y-2.5 list-disc pl-5 leading-relaxed">
+              <li>
+                <strong>If you only use Gmail for work:</strong> Sign in with <span class="ph-email font-medium text-slate-900">[Insert Work Email Address]</span>. If a dark box titled <em>Device Policy Alert</em> pops up, tap <strong>NEXT</strong>.
+              </li>
+              <li>
+                <strong>If your personal Gmail is already open on your phone:</strong> Tap your circular profile photo or initial in the <strong>top-right corner</strong> of Gmail, then tap <strong>Manage accounts on this device</strong>.
+              </li>
+              <li>
+                Find your official work email address and tap the slider next to <strong>Use in Gmail</strong> so it turns <strong>blue (ON)</strong>. <em>(If your work email is not listed yet, tap <strong>+ Add another account</strong> first.)</em>
+              </li>
+              <li>
+                Tap <strong>Done</strong> in the top-right corner.
+              </li>
+            </ul>
+          </div>
+
+          <!-- Visual Slot: Step 1 (True iPhone Aspect Ratio Canvas) -->
+          <div class="w-full lg:w-auto flex flex-col items-center shrink-0">
+            <canvas id="slot-step1" class="iphone-canvas" width="780" height="1608"></canvas>
+            <span class="text-[11px] text-slate-500 mt-2.5 text-center">Switch <strong>Use in Gmail</strong> ON, then tap <strong>Done</strong></span>
+          </div>
+        </div>
+      </article>
+
+      <!-- ================= STEP 2 ================= -->
+      <article class="step-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex flex-col gap-6">
+          <div class="space-y-3" contenteditable="true">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-slate-900 text-white font-bold text-sm flex items-center justify-center shrink-0">2</span>
+              <h2 class="text-lg font-bold text-slate-900">Open "Google Device Policy" and tap the blue arrow</h2>
+            </div>
+            <p class="text-sm text-slate-700 leading-relaxed">
+              As soon as you switch on your work email, Gmail will ask for the <strong>Google Device Policy</strong> app:
+            </p>
+            <ol class="text-sm text-slate-700 space-y-2 list-decimal pl-5 leading-relaxed">
+              <li>A white box will pop up over Gmail saying <em>"Install the latest version of Google Device Policy so you can access your work data."</em> Tap <strong>APP STORE</strong>.</li>
+              <li>In the App Store, tap <strong>Get</strong> (if installing for the first time) or <strong>Open</strong> (if it is already on your iPhone).</li>
+              <li>Inside the <strong>Install profile</strong> screen, tap the <strong>round blue circle with the white downward arrow</strong> on the right side. <em>(If Google briefly asks you to confirm your account, tap Continue.)</em></li>
+            </ol>
+          </div>
+
+          <!-- Dual Visual Slots: Step 2A & Step 2B -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2 place-items-center bg-slate-50 rounded-xl p-5 border border-slate-100">
+            <div class="flex flex-col items-center">
+              <canvas id="slot-step2a" class="iphone-canvas" width="780" height="1608"></canvas>
+              <span class="text-[11px] text-slate-600 mt-2.5 font-medium">2A. Tap <strong>APP STORE</strong>, then tap <strong>Open</strong></span>
+            </div>
+
+            <div class="flex flex-col items-center">
+              <canvas id="slot-step2b" class="iphone-canvas" width="780" height="1608"></canvas>
+              <span class="text-[11px] text-slate-600 mt-2.5 font-medium">2B. Tap the <strong>round blue downward arrow</strong></span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ================= STEP 3 ================= -->
+      <article class="step-card page-break-before rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="space-y-4">
+          <div contenteditable="true" class="space-y-3">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-slate-900 text-white font-bold text-sm flex items-center justify-center shrink-0">3</span>
+              <h2 class="text-lg font-bold text-slate-900">Download the security pass in Safari</h2>
+            </div>
+            <p class="text-sm text-slate-700 leading-relaxed">
+              Apple only permits iPhone security passes to download inside <strong>Safari</strong> (Apple's built-in compass browser). Depending on your phone's browser setup, follow <strong>Path A</strong> or <strong>Path B</strong>:
+            </p>
+
+            <div class="rounded-xl bg-emerald-50/80 border border-emerald-200 p-4 text-sm text-slate-800">
+              <strong class="text-emerald-900">Path A — If Safari opens on its own and asks "Do you want to allow this?":</strong>
+              <p class="mt-1 text-xs sm:text-sm text-slate-700">
+                Tap <strong>Allow</strong>, tap <strong>Close</strong> on the <em>Profile Downloaded</em> message, and go straight to <strong>Step 4</strong>. <em>(Do not tap the blue "Download profile" button again once the pop-up has appeared.)</em>
+              </p>
+            </div>
+
+            <div class="rounded-xl bg-amber-50/80 border border-amber-200 p-4 text-sm text-slate-800 space-y-2">
+              <strong class="text-amber-950">Path B — If you see a white screen saying "Copy the link from the URL bar to the Safari app":</strong>
+              <p class="text-xs sm:text-sm text-slate-700">
+                Your phone opened the link inside Google Chrome instead of Safari. Move it to Safari in three quick taps:
+              </p>
+              <ol class="text-xs sm:text-sm text-slate-700 list-decimal pl-5 space-y-1.5 leading-relaxed">
+                <li><strong>Copy the link:</strong> Press and hold your finger for two seconds on the top address pill (<code>ios-mdm.googleusercontent.com</code>), then tap <strong>Copy link</strong>.</li>
+                <li><strong>Paste into Safari's bottom address bar:</strong> Open <strong>Safari</strong> (the blue compass icon on your Home Screen). Tap the <strong>Search or enter website name</strong> bar at the <strong>very bottom</strong> of the screen—<strong>not</strong> the Google search box in the middle of the page. Tap again, tap <strong>Paste</strong> (or <strong>Paste and Go</strong>), and press the blue <strong>arrow (→)</strong> key on your keyboard.</li>
+                <li><strong>Tap Download &amp; Allow:</strong> When <em>Installing your profile</em> opens in Safari, tap the blue <strong>Download profile</strong> button once, tap <strong>Allow</strong>, and tap <strong>Close</strong>.</li>
+              </ol>
+            </div>
+          </div>
+
+          <!-- Triple Visual Slots: Step 3A, Step 3B, Step 3C -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2 place-items-center bg-slate-50 rounded-xl p-5 border border-slate-100">
+            <div class="flex flex-col items-center">
+              <canvas id="slot-step3a" class="iphone-canvas iphone-canvas-sm" width="780" height="1608"></canvas>
+              <span class="text-[11px] text-slate-600 mt-2.5 text-center font-medium">3A. Hold top bar &amp; tap <strong>Copy link</strong></span>
+            </div>
+
+            <div class="flex flex-col items-center">
+              <canvas id="slot-step3b" class="iphone-canvas iphone-canvas-sm" width="780" height="1608"></canvas>
+              <span class="text-[11px] text-slate-600 mt-2.5 text-center font-medium">3B. Paste in Safari's <strong>bottom bar</strong></span>
+            </div>
+
+            <div class="flex flex-col items-center">
+              <canvas id="slot-step3c" class="iphone-canvas iphone-canvas-sm" width="780" height="1608"></canvas>
+              <span class="text-[11px] text-slate-600 mt-2.5 text-center font-medium">3C. Tap <strong>Allow</strong>, then tap <strong>Close</strong></span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ================= STEP 4 ================= -->
+      <article class="step-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex flex-col gap-6">
+          <div contenteditable="true" class="space-y-3">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-slate-900 text-white font-bold text-sm flex items-center justify-center shrink-0">4</span>
+              <h2 class="text-lg font-bold text-slate-900">Locate the pass inside your iPhone Settings</h2>
+            </div>
+            <p class="text-sm text-slate-700 leading-relaxed">
+              Swipe up to leave Safari and tap the grey <strong>Settings</strong> gear icon on your iPhone Home Screen:
+            </p>
+            <ul class="text-sm text-slate-700 space-y-2 list-disc pl-5 leading-relaxed">
+              <li><strong>Shortcut at the top (4A):</strong> Look right underneath your name and Apple ID banner near the top of Settings and tap <strong>Profile Downloaded</strong>.</li>
+              <li><strong>If "Profile Downloaded" is not at the top (4B):</strong> Scroll down slightly in Settings, tap <strong>General</strong>, tap <strong>VPN &amp; Device Management</strong>, and tap <strong>Google Workspace device policy payload profile</strong> under <em>Downloaded Profile</em>.</li>
+            </ul>
+          </div>
+
+          <!-- Dual Visual Slots: Step 4A & Step 4B -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-1 place-items-center bg-slate-50 rounded-xl p-5 border border-slate-100">
+            <div class="flex flex-col items-center">
+              <canvas id="slot-step4a" class="iphone-canvas" width="780" height="1608"></canvas>
+              <span class="text-[11px] text-slate-600 mt-2.5 font-medium">4A. Top of Settings: <strong>Profile Downloaded</strong></span>
+            </div>
+
+            <div class="flex flex-col items-center">
+              <canvas id="slot-step4b" class="iphone-canvas" width="780" height="1608"></canvas>
+              <span class="text-[11px] text-slate-600 mt-2.5 font-medium">4B. Or via <strong>General → VPN &amp; Device Management</strong></span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ================= STEP 5 ================= -->
+      <article class="step-card page-break-before rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="space-y-4">
+          <div contenteditable="true" class="space-y-3">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-slate-900 text-white font-bold text-sm flex items-center justify-center shrink-0">5</span>
+              <h2 class="text-lg font-bold text-slate-900">Enter your iPhone PIN and approve Apple's warning</h2>
+            </div>
+            <ol class="text-sm text-slate-700 space-y-2 list-decimal pl-5 leading-relaxed">
+              <li>On the <strong>Install Profile</strong> screen, tap the blue <strong>Install</strong> button in the top-right corner.</li>
+              <li><strong>Type your 6-digit iPhone unlock passcode</strong> (the number code you use to unlock your phone—Apple does not use Face ID on this screen). <em>If IT is assisting you on a call, pause screen sharing briefly while typing your PIN.</em></li>
+              <li>A <strong>Warning</strong> screen will appear stating that an administrator can collect data or remotely erase your iPhone. Apple displays this exact same generic legal text to every company worldwide; in practice, this pass simply lets <span class="ph-org">[Insert Organization Name]</span> protect company mail and clear work data if a phone is ever lost. Tap <strong>Install</strong> in the top-right corner.</li>
+              <li>A small box titled <strong>Remote Management</strong> will pop up with <strong>Trust</strong> printed in red letters. Even though red normally signals a stop button, <strong>Trust</strong> is Apple's confirmation button here. Tap <strong>Trust</strong>.</li>
+              <li>Wait two seconds until the top reads <strong>Profile Installed</strong>, then tap the blue <strong>checkmark (✓)</strong> in the top-right corner.</li>
+            </ol>
+          </div>
+
+          <!-- Triple Visual Slots: Step 5A, Step 5B, Step 5C -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2 place-items-center bg-slate-50 rounded-xl p-5 border border-slate-100">
+            <div class="flex flex-col items-center">
+              <canvas id="slot-step5a" class="iphone-canvas iphone-canvas-sm" width="780" height="1608"></canvas>
+              <span class="text-[11px] text-slate-600 mt-2.5 text-center font-medium">5A. Tap <strong>Install</strong> &amp; enter iPhone PIN</span>
+            </div>
+
+            <div class="flex flex-col items-center">
+              <canvas id="slot-step5b" class="iphone-canvas iphone-canvas-sm" width="780" height="1608"></canvas>
+              <span class="text-[11px] text-slate-600 mt-2.5 text-center font-medium">5B. Tap <strong>Install</strong>, then red <strong>Trust</strong></span>
+            </div>
+
+            <div class="flex flex-col items-center">
+              <canvas id="slot-step5c" class="iphone-canvas iphone-canvas-sm" width="780" height="1608"></canvas>
+              <span class="text-[11px] text-slate-600 mt-2.5 text-center font-medium">5C. Tap the blue <strong>checkmark (✓)</strong></span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ================= STEP 6 ================= -->
+      <article class="step-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex flex-col lg:flex-row gap-8 items-start">
+          <div class="flex-1 space-y-3" contenteditable="true">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-slate-900 text-white font-bold text-sm flex items-center justify-center shrink-0">6</span>
+              <h2 class="text-lg font-bold text-slate-900">Quick IT approval &amp; opening your work inbox</h2>
+            </div>
+            <p class="text-sm text-slate-700 leading-relaxed">
+              As a final safeguard, your work inbox remains locked behind the scenes until IT approves your handset in the company console.
+            </p>
+            <ol class="text-sm text-slate-700 space-y-2 list-decimal pl-5 leading-relaxed">
+              <li>
+                <strong>Notify IT for instant approval:</strong> Message or call <span class="ph-it font-medium text-slate-900">[Insert Named IT Contact &amp; Phone/WhatsApp]</span>. If you open Gmail before IT clicks approve, you will see a notice stating <em>"Your administrator must approve this device"</em>—that confirms your installation succeeded.
+              </li>
+              <li>
+                <strong>Open your work inbox:</strong> Once IT confirms approval (typically under two minutes), open <strong>Gmail</strong>. If your personal inbox is still displayed, tap your top-right <strong>profile circle → Manage accounts on this device</strong>, verify that <strong>Use in Gmail</strong> is switched <strong>ON (blue)</strong> under your official ID, and tap <strong>Done</strong>.
+              </li>
+            </ol>
+            <div class="mt-3 rounded-xl bg-slate-50 border border-slate-200 p-3.5 text-xs text-slate-700 leading-relaxed">
+              <strong class="text-slate-900">What changes on your phone once active:</strong> Your official email, Calendar, and Drive work as normal, while copying work text into personal apps or sharing company attachments out to WhatsApp or personal Gmail is restricted automatically to protect company data.
+            </div>
+          </div>
+
+          <!-- Visual Slot: Step 6 -->
+          <div class="w-full lg:w-auto flex flex-col items-center shrink-0">
+            <canvas id="slot-step6" class="iphone-canvas" width="780" height="1608"></canvas>
+            <span class="text-[11px] text-slate-500 mt-2.5 text-center">Normal holding message until IT clicks Approve</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  </div>
+
+  <script>
+    // ============================================================================
+    // DETERMINISTIC RETINA iPHONE SCREEN RENDERER (390 x 804 logical -> 2x HiDPI)
+    // Guarantees true ~9:18.55 iPhone proportions & zero CSS/html2canvas drift
+    // ============================================================================
+    const LOGICAL_W = 390;
+    const LOGICAL_H = 804;
+    const DPI_SCALE = 2;
+    const IPHONE_ASPECT = LOGICAL_H / LOGICAL_W; // 2.061538...
+
+    const FONT_SANS = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+
+    function rRect(ctx, x, y, w, h, r) {
+      const radius = Math.min(r, w / 2, h / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.arcTo(x + w, y, x + w, y + h, radius);
+      ctx.arcTo(x + w, y + h, x, y + h, radius);
+      ctx.arcTo(x, y + h, x, y, radius);
+      ctx.arcTo(x, y, x + w, y, radius);
+      ctx.closePath();
+    }
+
+    function fillRRect(ctx, x, y, w, h, r, fillStyle) {
+      rRect(ctx, x, y, w, h, r);
+      ctx.fillStyle = fillStyle;
+      ctx.fill();
+    }
+
+    function strokeRRect(ctx, x, y, w, h, r, strokeStyle, lineWidth = 1.5) {
+      rRect(ctx, x, y, w, h, r);
+      ctx.strokeStyle = strokeStyle;
+      ctx.lineWidth = lineWidth;
+      ctx.stroke();
+    }
+
+    // Draw bold red callout ring around exact tap target
+    function drawTapTarget(ctx, x, y, w, h, r = 12) {
+      ctx.save();
+      rRect(ctx, x - 4, y - 4, w + 8, h + 8, r + 4);
+      ctx.strokeStyle = 'rgba(220, 38, 38, 0.24)';
+      ctx.lineWidth = 7;
+      ctx.stroke();
+
+      rRect(ctx, x, y, w, h, r);
+      ctx.strokeStyle = '#dc2626';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Wrap text cleanly inside a fixed pixel width with exact line height
+    function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, align = 'left') {
+      const words = String(text).split(' ');
+      let line = '';
+      let curY = y;
+      ctx.textAlign = align;
+      ctx.textBaseline = 'top';
+
+      for (let i = 0; i < words.length; i++) {
+        const testLine = line ? line + ' ' + words[i] : words[i];
+        if (ctx.measureText(testLine).width > maxWidth && line) {
+          ctx.fillText(line, x, curY);
+          line = words[i];
+          curY += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      if (line) {
+        ctx.fillText(line, x, curY);
+        curY += lineHeight;
+      }
+      ctx.textAlign = 'left';
+      return curY;
+    }
+
+    function truncateToWidth(ctx, str, maxW) {
+      if (ctx.measureText(str).width <= maxW) return str;
+      let s = str;
+      while (s.length > 4 && ctx.measureText(s + '…').width > maxW) {
+        s = s.slice(0, -1);
+      }
+      return s + '…';
+    }
+
+    // Draw outer iPhone titanium bezel, screen background, status bar, Dynamic Island & Home bar
+    function beginIPhoneScreen(canvasId, screenBg = '#f8fafc', darkStatus = false) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return null;
+      canvas.width = LOGICAL_W * DPI_SCALE;
+      canvas.height = LOGICAL_H * DPI_SCALE;
+
+      const ctx = canvas.getContext('2d');
+      ctx.save();
+      ctx.scale(DPI_SCALE, DPI_SCALE);
+      ctx.clearRect(0, 0, LOGICAL_W, LOGICAL_H);
+
+      // Outer metallic frame
+      fillRRect(ctx, 2, 2, LOGICAL_W - 4, LOGICAL_H - 4, 54, '#334155');
+      // Inner black bezel
+      fillRRect(ctx, 5, 5, LOGICAL_W - 10, LOGICAL_H - 10, 51, '#0f172a');
+
+      // Screen viewport clip (x:14, y:14, w:362, h:776)
+      const sx = 14, sy = 14, sw = 362, sh = 776;
+      ctx.save();
+      rRect(ctx, sx, sy, sw, sh, 42);
+      ctx.clip();
+
+      // Base screen fill
+      ctx.fillStyle = screenBg;
+      ctx.fillRect(sx, sy, sw, sh);
+
+      // Status bar time ("9:41")
+      const fg = darkStatus ? '#ffffff' : '#0f172a';
+      ctx.fillStyle = fg;
+      ctx.font = `600 14px ${FONT_SANS}`;
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'left';
+      ctx.fillText('9:41', sx + 28, sy + 27);
+
+      // Dynamic Island
+      fillRRect(ctx, sx + (sw - 106) / 2, sy + 13, 106, 28, 14, '#000000');
+
+      // Signal bars + Battery on top right
+      const rx = sx + sw - 74;
+      for (let b = 0; b < 4; b++) {
+        const bh = 5 + b * 2.5;
+        fillRRect(ctx, rx + b * 5, sy + 31 - bh, 3.2, bh, 1, fg);
+      }
+      // Wi-Fi arc dot + arcs
+      ctx.beginPath();
+      ctx.arc(rx + 28, sy + 30, 1.8, 0, Math.PI * 2);
+      ctx.fillStyle = fg;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(rx + 28, sy + 30, 5.5, -Math.PI * 0.78, -Math.PI * 0.22);
+      ctx.strokeStyle = fg;
+      ctx.lineWidth = 1.6;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(rx + 28, sy + 30, 9.2, -Math.PI * 0.78, -Math.PI * 0.22);
+      ctx.stroke();
+
+      // Battery icon
+      strokeRRect(ctx, rx + 41, sy + 21, 22, 11, 3, fg, 1.3);
+      fillRRect(ctx, rx + 43, sy + 23, 16, 7, 1.5, fg);
+      fillRRect(ctx, rx + 64, sy + 24.5, 1.8, 4, 0.8, fg);
+
+      return { ctx, sx, sy, sw, sh };
+    }
+
+    function endIPhoneScreen(env, darkHomeBar = false) {
+      if (!env) return;
+      const { ctx, sx, sy, sw, sh } = env;
+      // Bottom iOS Home Indicator
+      fillRRect(
+        ctx,
+        sx + (sw - 128) / 2,
+        sy + sh - 15,
+        128,
+        5,
+        2.5,
+        darkHomeBar ? 'rgba(255,255,255,0.7)' : 'rgba(15,23,42,0.28)'
+      );
+      ctx.restore(); // unclip viewport
+      ctx.restore(); // unscale DPI
+    }
+
+    function drawIOSToggle(ctx, x, y, isOn = true) {
+      fillRRect(ctx, x, y, 46, 26, 13, isOn ? '#2563eb' : '#cbd5e1');
+      ctx.beginPath();
+      ctx.arc(isOn ? x + 33 : x + 13, y + 13, 10.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+    }
+
+    // Draw all 11 screens using live user field values
+    function renderAllScreens() {
+      const vals = getFieldValues();
+
+      // ---------------- 1. STEP 1: Gmail Manage Accounts ----------------
+      {
+        const env = beginIPhoneScreen('slot-step1', '#f1f5f9', false);
+        if (env) {
+          const { ctx, sx, sy, sw } = env;
+          // Top sheet background
+          fillRRect(ctx, sx, sy + 52, sw, 730, 22, '#f8fafc');
+          fillRRect(ctx, sx, sy + 52, sw, 52, 22, '#ffffff');
+          ctx.fillStyle = '#e2e8f0';
+          ctx.fillRect(sx, sy + 103, sw, 1);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `700 16px ${FONT_SANS}`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('Manage accounts', sx + sw / 2, sy + 78);
+
+          // Done button
+          ctx.fillStyle = '#2563eb';
+          ctx.font = `700 15px ${FONT_SANS}`;
+          ctx.textAlign = 'right';
+          ctx.fillText('Done', sx + sw - 22, sy + 78);
+          drawTapTarget(ctx, sx + sw - 68, sy + 62, 54, 31, 8);
+
+          // Card 1: Personal Gmail
+          const cx = sx + 18, cw = sw - 36;
+          fillRRect(ctx, cx, sy + 124, cw, 118, 16, '#ffffff');
+          strokeRRect(ctx, cx, sy + 124, cw, 118, 16, '#e2e8f0', 1.2);
+
+          ctx.beginPath();
+          ctx.arc(cx + 30, sy + 158, 18, 0, Math.PI * 2);
+          ctx.fillStyle = '#e11d48';
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `700 15px ${FONT_SANS}`;
+          ctx.textAlign = 'center';
+          ctx.fillText('P', cx + 30, sy + 158);
+
+          ctx.textAlign = 'left';
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `600 14px ${FONT_SANS}`;
+          ctx.fillText('Personal Account', cx + 58, sy + 150);
+          ctx.fillStyle = '#64748b';
+          ctx.font = `400 12px ${FONT_SANS}`;
+          ctx.fillText('personal.id@gmail.com', cx + 58, sy + 168);
+
+          ctx.fillStyle = '#f1f5f9';
+          ctx.fillRect(cx + 16, sy + 188, cw - 32, 1);
+          ctx.fillStyle = '#334155';
+          ctx.font = `500 14px ${FONT_SANS}`;
+          ctx.fillText('Use in Gmail', cx + 18, sy + 214);
+          drawIOSToggle(ctx, cx + cw - 64, sy + 201, true);
+
+          // Card 2: Official Work ID
+          fillRRect(ctx, cx, sy + 260, cw, 122, 16, '#ffffff');
+          strokeRRect(ctx, cx, sy + 260, cw, 122, 16, '#93c5fd', 2);
+
+          ctx.beginPath();
+          ctx.arc(cx + 30, sy + 295, 18, 0, Math.PI * 2);
+          ctx.fillStyle = '#1e293b';
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `700 15px ${FONT_SANS}`;
+          ctx.textAlign = 'center';
+          ctx.fillText('W', cx + 30, sy + 295);
+
+          ctx.textAlign = 'left';
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `700 14px ${FONT_SANS}`;
+          ctx.fillText('Official Work ID', cx + 58, sy + 287);
+          ctx.fillStyle = '#475569';
+          ctx.font = `500 12px ${FONT_SANS}`;
+          const workMailStr = truncateToWidth(ctx, vals.emailScreen, cw - 74);
+          ctx.fillText(workMailStr, cx + 58, sy + 305);
+
+          ctx.fillStyle = '#f1f5f9';
+          ctx.fillRect(cx + 16, sy + 325, cw - 32, 1);
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `600 14px ${FONT_SANS}`;
+          ctx.fillText('Use in Gmail', cx + 18, sy + 352);
+          drawIOSToggle(ctx, cx + cw - 64, sy + 339, true);
+          drawTapTarget(ctx, cx + cw - 68, sy + 335, 54, 34, 17);
+
+          // + Add another account row
+          fillRRect(ctx, cx, sy + 402, cw, 48, 14, '#ffffff');
+          strokeRRect(ctx, cx, sy + 402, cw, 48, 14, '#e2e8f0', 1);
+          ctx.fillStyle = '#2563eb';
+          ctx.font = `600 14px ${FONT_SANS}`;
+          ctx.fillText('+  Add another account', cx + 18, sy + 426);
+
+          // Bottom toast confirmation bar (seen at 12:56 in video)
+          fillRRect(ctx, cx, sy + 690, cw, 46, 12, '#1e293b');
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `500 12px ${FONT_SANS}`;
+          ctx.fillText('This account will be used in Gmail', cx + 16, sy + 713);
+
+          endIPhoneScreen(env, false);
+        }
+      }
+
+      // ---------------- 2A. STEP 2A: Gmail -> App Store Modal ----------------
+      {
+        const env = beginIPhoneScreen('slot-step2a', '#ffffff', false);
+        if (env) {
+          const { ctx, sx, sy, sw, sh } = env;
+          // Dimmed backdrop over Gmail splash
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.52)';
+          ctx.fillRect(sx, sy + 48, sw, sh - 48);
+
+          // Gmail M emblem subtly visible above modal
+          ctx.fillStyle = 'rgba(255,255,255,0.88)';
+          fillRRect(ctx, sx + (sw - 78) / 2, sy + 180, 78, 58, 14, 'rgba(255,255,255,0.16)');
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `800 36px ${FONT_SANS}`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('M', sx + sw / 2, sy + 210);
+
+          // Crisp Material/iOS white dialog box
+          const mx = sx + 28, my = sy + 295, mw = sw - 56, mh = 178;
+          fillRRect(ctx, mx, my, mw, mh, 16, '#ffffff');
+
+          ctx.fillStyle = '#1e293b';
+          ctx.font = `500 15px ${FONT_SANS}`;
+          drawWrappedText(
+            ctx,
+            'Install the latest version of "Google Device Policy" so you can access your work data.',
+            mx + 22,
+            my + 26,
+            mw - 44,
+            22
+          );
+
+          ctx.font = `700 14px ${FONT_SANS}`;
+          ctx.textBaseline = 'middle';
+          ctx.textAlign = 'right';
+          ctx.fillStyle = '#64748b';
+          ctx.fillText('CANCEL', mx + mw - 128, my + mh - 30);
+
+          ctx.fillStyle = '#2563eb';
+          ctx.fillText('APP STORE', mx + mw - 24, my + mh - 30);
+          drawTapTarget(ctx, mx + mw - 114, my + mh - 46, 98, 32, 8);
+
+          endIPhoneScreen(env, true);
+        }
+      }
+
+      // ---------------- 2B. STEP 2B: Google Device Policy App ----------------
+      {
+        const env = beginIPhoneScreen('slot-step2b', '#ffffff', false);
+        if (env) {
+          const { ctx, sx, sy, sw } = env;
+          // App top bar
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `600 17px ${FONT_SANS}`;
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('☰   Install profile', sx + 22, sy + 76);
+
+          ctx.beginPath();
+          ctx.arc(sx + sw - 34, sy + 76, 15, 0, Math.PI * 2);
+          ctx.fillStyle = '#334155';
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `700 12px ${FONT_SANS}`;
+          ctx.textAlign = 'center';
+          ctx.fillText('W', sx + sw - 34, sy + 76);
+
+          ctx.fillStyle = '#e2e8f0';
+          ctx.fillRect(sx, sy + 102, sw, 1);
+
+          // Illustration area (tablet + phone with shield)
+          fillRRect(ctx, sx + 96, sy + 155, 118, 148, 12, '#e2e8f0');
+          fillRRect(ctx, sx + 104, sy + 165, 102, 128, 8, '#ffffff');
+          fillRRect(ctx, sx + 184, sy + 195, 72, 118, 10, '#1e293b');
+          fillRRect(ctx, sx + 190, sy + 204, 60, 100, 6, '#dbeafe');
+
+          // Blue shield badge inside illustration
+          ctx.beginPath();
+          ctx.arc(sx + 155, sy + 228, 20, 0, Math.PI * 2);
+          ctx.fillStyle = '#2563eb';
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `700 16px ${FONT_SANS}`;
+          ctx.fillText('✓', sx + 155, sy + 229);
+
+          // Round Blue Downward Arrow FAB (exact target from video @ 13:15)
+          const bx = sx + sw - 56, by = sy + 318;
+          ctx.beginPath();
+          ctx.arc(bx, by, 26, 0, Math.PI * 2);
+          ctx.fillStyle = '#2563eb';
+          ctx.fill();
+
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `700 22px ${FONT_SANS}`;
+          ctx.textAlign = 'center';
+          ctx.fillText('↓', bx, by + 1);
+          drawTapTarget(ctx, bx - 31, by - 31, 62, 62, 31);
+
+          // Divider & instructional copy
+          ctx.fillStyle = '#f1f5f9';
+          ctx.fillRect(sx, sy + 360, sw, 1);
+
+          ctx.textAlign = 'left';
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `700 18px ${FONT_SANS}`;
+          ctx.fillText('Install profile', sx + 24, sy + 398);
+
+          ctx.fillStyle = '#475569';
+          ctx.font = `400 14px ${FONT_SANS}`;
+          drawWrappedText(
+            ctx,
+            'To access your work data, install this profile. Doing this helps your organisation\'s admins protect your data, even if you lose your device.',
+            sx + 24,
+            sy + 422,
+            sw - 48,
+            21
+          );
+
+          endIPhoneScreen(env, false);
+        }
+      }
+
+      // ---------------- 3A. STEP 3A: Chrome Copy Link ----------------
+      {
+        const env = beginIPhoneScreen('slot-step3a', '#ffffff', false);
+        if (env) {
+          const { ctx, sx, sy, sw } = env;
+          // Chrome top toolbar + URL pill
+          fillRRect(ctx, sx, sy + 48, sw, 58, 0, '#f8fafc');
+          const ux = sx + 44, uy = sy + 57, uw = sw - 88, uh = 38;
+          fillRRect(ctx, ux, uy, uw, uh, 19, '#e2e8f0');
+          drawTapTarget(ctx, ux, uy, uw, uh, 19);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `500 13px ${FONT_SANS}`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('ios-mdm.googleusercontent.com', ux + uw / 2, uy + uh / 2);
+
+          ctx.fillStyle = '#475569';
+          ctx.font = `700 15px ${FONT_SANS}`;
+          ctx.fillText('↑', sx + 23, uy + uh / 2);
+          ctx.fillText('•••', sx + sw - 23, uy + uh / 2);
+
+          // Page content behind menu
+          ctx.textAlign = 'left';
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `600 20px ${FONT_SANS}`;
+          ctx.fillText('Finish installing your profile', sx + 26, sy + 255);
+
+          ctx.fillStyle = '#334155';
+          ctx.font = `400 15px ${FONT_SANS}`;
+          drawWrappedText(
+            ctx,
+            'Copy the link from the URL bar to the Safari app.',
+            sx + 26,
+            sy + 285,
+            sw - 52,
+            22
+          );
+
+          ctx.fillStyle = '#2563eb';
+          ctx.font = `500 13px ${FONT_SANS}`;
+          ctx.fillText('Learn more about keeping your data safe', sx + 26, sy + 350);
+
+          // Floating iOS long-press menu under URL bar
+          const mx = sx + 48, my = sy + 108, mw = 236, mh = 92;
+          fillRRect(ctx, mx, my, mw, mh, 14, '#f1f5f9');
+          strokeRRect(ctx, mx, my, mw, mh, 14, '#cbd5e1', 1.2);
+
+          fillRRect(ctx, mx + 6, my + 6, mw - 12, 40, 10, '#ffffff');
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `700 14px ${FONT_SANS}`;
+          ctx.textBaseline = 'middle';
+          ctx.fillText('Copy link', mx + 18, my + 26);
+          drawTapTarget(ctx, mx + 6, my + 6, mw - 12, 40, 10);
+
+          ctx.fillStyle = '#64748b';
+          ctx.font = `400 13px ${FONT_SANS}`;
+          ctx.fillText('Move address bar to bottom', mx + 18, my + 68);
+
+          endIPhoneScreen(env, false);
+        }
+      }
+
+      // ---------------- 3B. STEP 3B: Safari Bottom Address Bar ----------------
+      {
+        const env = beginIPhoneScreen('slot-step3b', '#ffffff', false);
+        if (env) {
+          const { ctx, sx, sy, sw, sh } = env;
+          // Middle webpage warning: Do NOT use Google middle box
+          const gx = sx + 24, gy = sy + 92, gw = sw - 48, gh = 132;
+          fillRRect(ctx, gx, gy, gw, gh, 16, '#fef2f2');
+          strokeRRect(ctx, gx, gy, gw, gh, 16, '#fca5a5', 1.5);
+
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = `700 22px ${FONT_SANS}`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('Google', gx + gw / 2, gy + 34);
+
+          fillRRect(ctx, gx + 18, gy + 58, gw - 36, 36, 18, '#ffffff');
+          strokeRRect(ctx, gx + 18, gy + 58, gw - 36, 36, 18, '#fecaca', 1.2);
+          ctx.fillStyle = '#dc2626';
+          ctx.font = `700 12px ${FONT_SANS}`;
+          ctx.fillText('✕  Do NOT paste in middle box', gx + gw / 2, gy + 76);
+
+          // Downward directional hint arrow pointing to bottom Safari bar
+          ctx.fillStyle = '#2563eb';
+          ctx.font = `700 13px ${FONT_SANS}`;
+          ctx.fillText('↓  Use Safari\'s bottom address bar below', sx + sw / 2, sy + 378);
+
+          // Dark iOS Paste / Paste and Go callout bubble
+          const px = sx + 68, py = sy + 414, pw = sw - 136, ph = 36;
+          fillRRect(ctx, px, py, pw, ph, 10, '#0f172a');
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `600 13px ${FONT_SANS}`;
+          ctx.fillText('Paste    |    Paste and Go', px + pw / 2, py + ph / 2);
+
+          // Safari Bottom URL Bar right above keyboard
+          fillRRect(ctx, sx, sy + 462, sw, 62, 0, '#f1f5f9');
+          const bx = sx + 18, by = sy + 471, bw = sw - 36, bh = 44;
+          fillRRect(ctx, bx, by, bw, bh, 14, '#ffffff');
+          strokeRRect(ctx, bx, by, bw, bh, 14, '#94a3b8', 1.2);
+          drawTapTarget(ctx, bx, by, bw, bh, 14);
+
+          ctx.textAlign = 'left';
+          ctx.fillStyle = '#475569';
+          ctx.font = `500 13px ${FONT_SANS}`;
+          ctx.fillText('Search or enter website name', bx + 14, by + bh / 2);
+
+          // Realistic iOS Bottom Keyboard
+          const ky = sy + 524, kh = sh - 524;
+          ctx.fillStyle = '#d1d5db';
+          ctx.fillRect(sx, ky, sw, kh);
+
+          const rows = [
+            ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+            ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+            ['z', 'x', 'c', 'v', 'b', 'n', 'm']
+          ];
+          rows.forEach((r, ri) => {
+            const kw = 30, kg = 5;
+            const totalW = r.length * kw + (r.length - 1) * kg;
+            const startX = sx + (sw - totalW) / 2;
+            const rowY = ky + 14 + ri * 48;
+            r.forEach((ch, ci) => {
+              const kx = startX + ci * (kw + kg);
+              fillRRect(ctx, kx, rowY, kw, 38, 6, '#ffffff');
+              ctx.fillStyle = '#0f172a';
+              ctx.font = `500 16px ${FONT_SANS}`;
+              ctx.textAlign = 'center';
+              ctx.fillText(ch, kx + kw / 2, rowY + 19);
+            });
+          });
+
+          // Spacebar + Blue Go arrow button
+          fillRRect(ctx, sx + 18, ky + 160, 68, 40, 8, '#9ca3af');
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `600 13px ${FONT_SANS}`;
+          ctx.textAlign = 'center';
+          ctx.fillText('123', sx + 52, ky + 180);
+
+          fillRRect(ctx, sx + 94, ky + 160, 174, 40, 8, '#ffffff');
+          ctx.fillStyle = '#475569';
+          ctx.fillText('space', sx + 181, ky + 180);
+
+          fillRRect(ctx, sx + 276, ky + 160, 68, 40, 8, '#2563eb');
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `700 18px ${FONT_SANS}`;
+          ctx.fillText('→', sx + 310, ky + 180);
+
+          endIPhoneScreen(env, false);
+        }
+      }
+
+      // ---------------- 3C. STEP 3C: Safari Allow Profile Modal ----------------
+      {
+        const env = beginIPhoneScreen('slot-step3c', '#ffffff', false);
+        if (env) {
+          const { ctx, sx, sy, sw, sh } = env;
+          // Background Safari page ("Installing your profile")
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `700 20px ${FONT_SANS}`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('Installing your profile', sx + sw / 2, sy + 94);
+
+          fillRRect(ctx, sx + 92, sy + 132, 178, 38, 19, '#2563eb');
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `600 13px ${FONT_SANS}`;
+          ctx.fillText('↓  Download profile', sx + sw / 2, sy + 151);
+
+          // Dimmed modal overlay
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.42)';
+          ctx.fillRect(sx, sy + 48, sw, sh - 48);
+
+          // iOS Alert Dialog
+          const ax = sx + 36, ay = sy + 258, aw = sw - 72, ah = 186;
+          fillRRect(ctx, ax, ay, aw, ah, 18, '#ffffff');
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `600 14px ${FONT_SANS}`;
+          drawWrappedText(
+            ctx,
+            '"ios-mdm.googleusercontent.com" is trying to download a configuration profile. Do you want to allow this?',
+            ax + aw / 2,
+            ay + 24,
+            aw - 36,
+            20,
+            'center'
+          );
+
+          // Horizontal & vertical button dividers
+          ctx.fillStyle = '#cbd5e1';
+          ctx.fillRect(ax, ay + ah - 48, aw, 1);
+          ctx.fillRect(ax + aw / 2, ay + ah - 48, 1, 48);
+
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = '#2563eb';
+          ctx.font = `400 16px ${FONT_SANS}`;
+          ctx.fillText('Ignore', ax + aw / 4, ay + ah - 24);
+
+          ctx.font = `700 16px ${FONT_SANS}`;
+          ctx.fillText('Allow', ax + (aw * 3) / 4, ay + ah - 24);
+          drawTapTarget(ctx, ax + aw / 2 + 8, ay + ah - 43, aw / 2 - 16, 38, 10);
+
+          // Next-popup helper pill at bottom
+          fillRRect(ctx, sx + 36, sy + 500, sw - 72, 46, 12, '#f8fafc');
+          ctx.fillStyle = '#334155';
+          ctx.font = `600 13px ${FONT_SANS}`;
+          ctx.fillText('Next pop-up: Tap "Close"', sx + sw / 2, sy + 523);
+
+          // Bottom Safari bar
+          fillRRect(ctx, sx, sy + sh - 78, sw, 78, 0, '#f1f5f9');
+          fillRRect(ctx, sx + 24, sy + sh - 68, sw - 48, 36, 12, '#e2e8f0');
+          ctx.fillStyle = '#475569';
+          ctx.font = `500 12px ${FONT_SANS}`;
+          ctx.fillText('AA   🔒 mdm.googleusercontent.com', sx + sw / 2, sy + sh - 50);
+
+          endIPhoneScreen(env, false);
+        }
+      }
+
+      // ---------------- 4A. STEP 4A: Settings -> Profile Downloaded ----------------
+      {
+        const env = beginIPhoneScreen('slot-step4a', '#000000', true);
+        if (env) {
+          const { ctx, sx, sy, sw } = env;
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `700 28px ${FONT_SANS}`;
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('Settings', sx + 22, sy + 88);
+
+          const cx = sx + 18, cw = sw - 36;
+          // Apple ID Card
+          fillRRect(ctx, cx, sy + 122, cw, 74, 14, '#1c1c1e');
+          ctx.beginPath();
+          ctx.arc(cx + 36, sy + 159, 22, 0, Math.PI * 2);
+          ctx.fillStyle = '#3f3f46';
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `600 16px ${FONT_SANS}`;
+          ctx.fillText('Apple ID', cx + 70, sy + 149);
+          ctx.fillStyle = '#a1a1aa';
+          ctx.font = `400 12px ${FONT_SANS}`;
+          ctx.fillText('iCloud, Media & Purchases', cx + 70, sy + 170);
+
+          // Profile Downloaded Row (Highlighted)
+          fillRRect(ctx, cx, sy + 216, cw, 50, 12, '#1c1c1e');
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `600 15px ${FONT_SANS}`;
+          ctx.fillText('Profile Downloaded', cx + 18, sy + 241);
+          ctx.fillStyle = '#71717a';
+          ctx.textAlign = 'right';
+          ctx.fillText('›', cx + cw - 18, sy + 241);
+          drawTapTarget(ctx, cx, sy + 216, cw, 50, 12);
+
+          // Connectivity group
+          fillRRect(ctx, cx, sy + 288, cw, 196, 14, '#1c1c1e');
+          const items = [
+            ['Airplane Mode', ''],
+            ['Wi-Fi', 'Connected  ›'],
+            ['Bluetooth', 'On  ›'],
+            ['Mobile Data', '›']
+          ];
+          items.forEach((item, idx) => {
+            const ry = sy + 288 + idx * 49;
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `400 15px ${FONT_SANS}`;
+            ctx.fillText(item[0], cx + 18, ry + 25);
+            if (idx === 0) {
+              drawIOSToggle(ctx, cx + cw - 62, ry + 12, false);
+            } else {
+              ctx.textAlign = 'right';
+              ctx.fillStyle = '#a1a1aa';
+              ctx.fillText(item[1], cx + cw - 18, ry + 25);
+            }
+            if (idx < 3) {
+              ctx.fillStyle = '#27272a';
+              ctx.fillRect(cx + 18, ry + 48, cw - 18, 1);
+            }
+          });
+
+          endIPhoneScreen(env, true);
+        }
+      }
+
+      // ---------------- 4B. STEP 4B: General -> VPN & Device Management ----------------
+      {
+        const env = beginIPhoneScreen('slot-step4b', '#f2f2f7', false);
+        if (env) {
+          const { ctx, sx, sy, sw } = env;
+          // Nav header
+          ctx.fillStyle = '#2563eb';
+          ctx.font = `500 15px ${FONT_SANS}`;
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('‹ General', sx + 16, sy + 74);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `700 15px ${FONT_SANS}`;
+          ctx.textAlign = 'center';
+          ctx.fillText('VPN & Device Management', sx + sw / 2 + 18, sy + 74);
+
+          const cx = sx + 18, cw = sw - 36;
+          // VPN Row
+          fillRRect(ctx, cx, sy + 112, cw, 48, 12, '#ffffff');
+          ctx.textAlign = 'left';
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `500 15px ${FONT_SANS}`;
+          ctx.fillText('VPN', cx + 18, sy + 136);
+          ctx.textAlign = 'right';
+          ctx.fillStyle = '#64748b';
+          ctx.font = `400 14px ${FONT_SANS}`;
+          ctx.fillText('Not Connected  ›', cx + cw - 16, sy + 136);
+
+          // Sign in row
+          fillRRect(ctx, cx, sy + 178, cw, 48, 12, '#ffffff');
+          ctx.textAlign = 'left';
+          ctx.fillStyle = '#2563eb';
+          ctx.font = `400 14px ${FONT_SANS}`;
+          ctx.fillText('Sign In to Work or School Account...', cx + 18, sy + 202);
+
+          // Downloaded Profile Section
+          ctx.fillStyle = '#64748b';
+          ctx.font = `600 12px ${FONT_SANS}`;
+          ctx.fillText('DOWNLOADED PROFILE', cx + 14, sy + 258);
+
+          fillRRect(ctx, cx, sy + 274, cw, 74, 14, '#ffffff');
+          drawTapTarget(ctx, cx, sy + 274, cw, 74, 14);
+
+          // Gear icon badge
+          fillRRect(ctx, cx + 14, sy + 291, 40, 40, 10, '#e2e8f0');
+          ctx.fillStyle = '#334155';
+          ctx.font = `700 18px ${FONT_SANS}`;
+          ctx.textAlign = 'center';
+          ctx.fillText('⚙', cx + 34, sy + 312);
+
+          ctx.textAlign = 'left';
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `600 14px ${FONT_SANS}`;
+          drawWrappedText(
+            ctx,
+            'Google Workspace device policy payload profile',
+            cx + 66,
+            sy + 292,
+            cw - 96,
+            19
+          );
+
+          ctx.textAlign = 'right';
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = `600 18px ${FONT_SANS}`;
+          ctx.textBaseline = 'middle';
+          ctx.fillText('›', cx + cw - 14, sy + 311);
+
+          endIPhoneScreen(env, false);
+        }
+      }
+
+      // ---------------- 5A. STEP 5A: Install & Enter iPhone Passcode ----------------
+      {
+        const env = beginIPhoneScreen('slot-step5a', '#f8fafc', false);
+        if (env) {
+          const { ctx, sx, sy, sw, sh } = env;
+          // Top sheet header showing Install Profile + Blue Install Pill
+          fillRRect(ctx, sx, sy + 52, sw, 54, 18, '#ffffff');
+          ctx.fillStyle = '#e2e8f0';
+          ctx.fillRect(sx, sy + 105, sw, 1);
+
+          ctx.fillStyle = '#64748b';
+          ctx.font = `600 16px ${FONT_SANS}`;
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('✕', sx + 22, sy + 79);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `700 16px ${FONT_SANS}`;
+          ctx.textAlign = 'center';
+          ctx.fillText('Install Profile', sx + sw / 2, sy + 79);
+
+          // Top-right blue Install button
+          fillRRect(ctx, sx + sw - 82, sy + 63, 66, 32, 16, '#2563eb');
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `700 14px ${FONT_SANS}`;
+          ctx.fillText('Install', sx + sw - 49, sy + 79);
+          drawTapTarget(ctx, sx + sw - 82, sy + 63, 66, 32, 16);
+
+          // Lock icon & Passcode prompt
+          fillRRect(ctx, sx + sw / 2 - 16, sy + 148, 32, 26, 6, '#2563eb');
+          strokeRRect(ctx, sx + sw / 2 - 10, sy + 134, 20, 20, 10, '#2563eb', 3);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `700 20px ${FONT_SANS}`;
+          ctx.fillText('Enter your passcode', sx + sw / 2, sy + 206);
+
+          ctx.fillStyle = '#64748b';
+          ctx.font = `400 13px ${FONT_SANS}`;
+          ctx.fillText('Enter the passcode you use to unlock this iPhone.', sx + sw / 2, sy + 234);
+
+          // 6 Passcode dots
+          for (let i = 0; i < 6; i++) {
+            const dx = sx + sw / 2 - 75 + i * 30;
+            ctx.beginPath();
+            ctx.arc(dx, sy + 276, 7.5, 0, Math.PI * 2);
+            if (i < 3) {
+              ctx.fillStyle = '#0f172a';
+              ctx.fill();
+            } else {
+              ctx.strokeStyle = '#94a3b8';
+              ctx.lineWidth = 1.8;
+              ctx.stroke();
+            }
+          }
+
+          // iOS Numeric Keypad at bottom
+          const padY = sy + 430;
+          ctx.fillStyle = '#e2e8f0';
+          ctx.fillRect(sx, padY, sw, sh - 430);
+
+          const nums = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', '⌫'];
+          nums.forEach((n, idx) => {
+            if (!n) return;
+            const col = idx % 3;
+            const row = Math.floor(idx / 3);
+            const kw = 104, kh = 54, gapX = 12, gapY = 10;
+            const startX = sx + (sw - (3 * kw + 2 * gapX)) / 2;
+            const kx = startX + col * (kw + gapX);
+            const ky = padY + 18 + row * (kh + gapY);
+            if (n !== '⌫') {
+              fillRRect(ctx, kx, ky, kw, kh, 10, '#ffffff');
+            }
+            ctx.fillStyle = '#0f172a';
+            ctx.font = `600 22px ${FONT_SANS}`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(n, kx + kw / 2, ky + kh / 2);
+          });
+
+          endIPhoneScreen(env, false);
+        }
+      }
+
+      // ---------------- 5B. STEP 5B: Warning & Red "Trust" Modal ----------------
+      {
+        const env = beginIPhoneScreen('slot-step5b', '#f1f5f9', false);
+        if (env) {
+          const { ctx, sx, sy, sw, sh } = env;
+          // Warning Header
+          fillRRect(ctx, sx, sy + 52, sw, 54, 18, '#ffffff');
+          ctx.fillStyle = '#64748b';
+          ctx.font = `600 16px ${FONT_SANS}`;
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('✕', sx + 22, sy + 79);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `700 16px ${FONT_SANS}`;
+          ctx.textAlign = 'center';
+          ctx.fillText('Warning', sx + sw / 2, sy + 79);
+
+          fillRRect(ctx, sx + sw - 82, sy + 63, 66, 32, 16, '#2563eb');
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `700 14px ${FONT_SANS}`;
+          ctx.fillText('Install', sx + sw - 49, sy + 79);
+
+          // Warning body card
+          const cx = sx + 18, cw = sw - 36;
+          fillRRect(ctx, cx, sy + 126, cw, 195, 14, '#ffffff');
+          ctx.textAlign = 'left';
+          ctx.fillStyle = '#64748b';
+          ctx.font = `600 11px ${FONT_SANS}`;
+          ctx.fillText('MOBILE DEVICE MANAGEMENT', cx + 16, sy + 148);
+
+          ctx.fillStyle = '#334155';
+          ctx.font = `400 13px ${FONT_SANS}`;
+          drawWrappedText(
+            ctx,
+            'Installing this profile will allow the administrator at "https://ios-mdm.google.com/server" to remotely manage your iPhone.',
+            cx + 16,
+            sy + 166,
+            cw - 32,
+            19
+          );
+
+          // Dimmed modal overlay
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.36)';
+          ctx.fillRect(sx, sy + 48, sw, sh - 48);
+
+          // Remote Management Alert Box
+          const ax = sx + 38, ay = sy + 310, aw = sw - 76, ah = 182;
+          fillRRect(ctx, ax, ay, aw, ah, 18, '#ffffff');
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `700 16px ${FONT_SANS}`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('Remote Management', ax + aw / 2, ay + 32);
+
+          ctx.fillStyle = '#334155';
+          ctx.font = `400 13.5px ${FONT_SANS}`;
+          drawWrappedText(
+            ctx,
+            'Do you trust this profile\'s source to enrol your iPhone into remote management?',
+            ax + aw / 2,
+            ay + 54,
+            aw - 32,
+            19,
+            'center'
+          );
+
+          ctx.fillStyle = '#cbd5e1';
+          ctx.fillRect(ax, ay + ah - 48, aw, 1);
+          ctx.fillRect(ax + aw / 2, ay + ah - 48, 1, 48);
+
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = '#2563eb';
+          ctx.font = `400 16px ${FONT_SANS}`;
+          ctx.fillText('Cancel', ax + aw / 4, ay + ah - 24);
+
+          ctx.fillStyle = '#dc2626';
+          ctx.font = `700 16px ${FONT_SANS}`;
+          ctx.fillText('Trust', ax + (aw * 3) / 4, ay + ah - 24);
+          drawTapTarget(ctx, ax + aw / 2 + 8, ay + ah - 43, aw / 2 - 16, 38, 10);
+
+          endIPhoneScreen(env, false);
+        }
+      }
+
+      // ---------------- 5C. STEP 5C: Profile Installed + Blue Checkmark ----------------
+      {
+        const env = beginIPhoneScreen('slot-step5c', '#f2f2f7', false);
+        if (env) {
+          const { ctx, sx, sy, sw } = env;
+          // Top sheet header
+          fillRRect(ctx, sx, sy + 52, sw, 56, 18, '#ffffff');
+          ctx.fillStyle = '#e2e8f0';
+          ctx.fillRect(sx, sy + 107, sw, 1);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `700 16px ${FONT_SANS}`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('Profile Installed', sx + sw / 2, sy + 80);
+
+          // Blue circular checkmark button at top-right (Video 2 @ 14:52)
+          const ckx = sx + sw - 34, cky = sy + 80;
+          ctx.beginPath();
+          ctx.arc(ckx, cky, 16, 0, Math.PI * 2);
+          ctx.fillStyle = '#2563eb';
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `700 15px ${FONT_SANS}`;
+          ctx.fillText('✓', ckx, cky + 1);
+          drawTapTarget(ctx, ckx - 20, cky - 20, 40, 40, 20);
+
+          // Profile summary card
+          const cx = sx + 18, cw = sw - 36;
+          fillRRect(ctx, cx, sy + 132, cw, 232, 16, '#ffffff');
+
+          fillRRect(ctx, cx + 16, sy + 150, 42, 42, 10, '#e2e8f0');
+          ctx.fillStyle = '#334155';
+          ctx.font = `700 20px ${FONT_SANS}`;
+          ctx.fillText('⚙', cx + 37, sy + 172);
+
+          ctx.textAlign = 'left';
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `700 15px ${FONT_SANS}`;
+          drawWrappedText(
+            ctx,
+            'Google Workspace device policy payload profile',
+            cx + 70,
+            sy + 151,
+            cw - 86,
+            20
+          );
+
+          ctx.fillStyle = '#f1f5f9';
+          ctx.fillRect(cx + 16, sy + 206, cw - 32, 1);
+
+          ctx.font = `500 13px ${FONT_SANS}`;
+          ctx.fillStyle = '#64748b';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('Signed by', cx + 16, sy + 228);
+          ctx.fillStyle = '#0f172a';
+          ctx.fillText('gogem.me', cx + 106, sy + 228);
+
+          ctx.fillStyle = '#16a34a';
+          ctx.font = `700 13px ${FONT_SANS}`;
+          ctx.fillText('Verified ✓', cx + 106, sy + 250);
+
+          ctx.fillStyle = '#64748b';
+          ctx.font = `500 13px ${FONT_SANS}`;
+          ctx.fillText('Contains', cx + 16, sy + 286);
+          ctx.fillStyle = '#0f172a';
+          ctx.fillText('Mobile Device Management', cx + 106, sy + 286);
+          ctx.fillText('Certificate', cx + 106, sy + 306);
+
+          // More Details button card
+          fillRRect(ctx, cx, sy + 382, cw, 48, 12, '#ffffff');
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `500 14px ${FONT_SANS}`;
+          ctx.fillText('More Details', cx + 18, sy + 406);
+          ctx.textAlign = 'right';
+          ctx.fillStyle = '#94a3b8';
+          ctx.fillText('›', cx + cw - 18, sy + 406);
+
+          endIPhoneScreen(env, false);
+        }
+      }
+
+      // ---------------- 6. STEP 6: Pending Admin Approval ----------------
+      {
+        const env = beginIPhoneScreen('slot-step6', '#f8fafc', false);
+        if (env) {
+          const { ctx, sx, sy, sw } = env;
+          // Gmail header bar
+          fillRRect(ctx, sx, sy + 48, sw, 52, 0, '#ffffff');
+          ctx.fillStyle = '#e2e8f0';
+          ctx.fillRect(sx, sy + 100, sw, 1);
+          ctx.fillStyle = '#dc2626';
+          ctx.font = `800 18px ${FONT_SANS}`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('Gmail', sx + sw / 2, sy + 74);
+
+          // Centered approval holding card
+          const cx = sx + 24, cw = sw - 48;
+          fillRRect(ctx, cx, sy + 190, cw, 260, 20, '#ffffff');
+          strokeRRect(ctx, cx, sy + 190, cw, 260, 20, '#e2e8f0', 1.5);
+
+          // Amber status circle
+          ctx.beginPath();
+          ctx.arc(sx + sw / 2, sy + 244, 26, 0, Math.PI * 2);
+          ctx.fillStyle = '#fef3c7';
+          ctx.fill();
+          ctx.fillStyle = '#b45309';
+          ctx.font = `700 22px ${FONT_SANS}`;
+          ctx.fillText('⏳', sx + sw / 2, sy + 245);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = `700 17px ${FONT_SANS}`;
+          ctx.fillText('Device Pending Approval', sx + sw / 2, sy + 298);
+
+          ctx.fillStyle = '#475569';
+          ctx.font = `400 14px ${FONT_SANS}`;
+          drawWrappedText(
+            ctx,
+            '"Your administrator must approve this device for access to work data."',
+            sx + sw / 2,
+            sy + 324,
+            cw - 40,
+            21,
+            'center'
+          );
+
+          // Green reassurance badge
+          fillRRect(ctx, cx + 18, sy + 394, cw - 36, 36, 10, '#ecfdf5');
+          strokeRRect(ctx, cx + 18, sy + 394, cw - 36, 36, 10, '#a7f3d0', 1);
+          ctx.fillStyle = '#047857';
+          ctx.font = `600 12px ${FONT_SANS}`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('✓ Opens automatically once IT approves', sx + sw / 2, sy + 412);
+
+          endIPhoneScreen(env, false);
+        }
+      }
+    }
+
+    // Live-bind fillable inputs to all matching placeholders in the briefing & iPhone canvases
+    function getFieldValues() {
+      const rawOrg = document.getElementById('inpOrg').value.trim();
+      const rawEmail = document.getElementById('inpEmail').value.trim();
+      const rawIT = document.getElementById('inpIT').value.trim();
+
+      return {
+        org: rawOrg || '[Insert Organization Name]',
+        email: rawEmail || '[Insert Work Email Address]',
+        emailScreen: rawEmail || 'name@company.com',
+        it: rawIT || '[Insert Named IT Contact & Phone/WhatsApp]',
+        fileSlug: (rawOrg ? rawOrg.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') : 'Executive') + '-iOS-Setup-Guide.docx'
+      };
+    }
+
+    function updatePlaceholders() {
+      const vals = getFieldValues();
+
+      document.querySelectorAll('.ph-org').forEach(el => {
+        el.textContent = vals.org;
+      });
+
+      document.querySelectorAll('.ph-email').forEach(el => {
+        el.textContent = vals.email;
+      });
+
+      document.querySelectorAll('.ph-it').forEach(el => {
+        el.textContent = vals.it;
+      });
+
+      // Re-draw crisp iPhone canvases so live Work Email updates inside Step 1 screen immediately
+      renderAllScreens();
+    }
+
+    // Convert a base64 PNG dataURL into a Uint8Array for docx.ImageRun
+    function dataUrlToUint8Array(dataUrl) {
+      const base64 = dataUrl.split(',')[1];
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return bytes;
+    }
+
+    // Export pre-rendered HiDPI iPhone canvas with exact 390:804 iPhone proportions for A4 Word layout
+    function getCanvasDocxImage(slotId, targetWidthPx) {
+      const canvas = document.getElementById(slotId);
+      if (!canvas) return null;
+
+      return {
+        data: dataUrlToUint8Array(canvas.toDataURL('image/png')),
+        width: targetWidthPx,
+        height: Math.round(targetWidthPx * IPHONE_ASPECT)
+      };
+    }
+
+    // Full-fidelity A4 OOXML (.docx) generator with true iPhone aspect ratios & fixed DXA columns
+    async function downloadAsDocx() {
+      const btn = document.getElementById('btnDownloadDocx');
+      const btnLabel = document.getElementById('btnDownloadLabel');
+      const statusEl = document.getElementById('exportStatus');
+
+      if (!window.docx) {
+        statusEl.textContent = 'Word export library is still loading—please try again in a moment.';
+        statusEl.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        btn.disabled = true;
+        btnLabel.textContent = 'Building A4 Word Document (.docx)...';
+        statusEl.textContent = 'Rendering Retina iPhone screens for A4 layout...';
+        statusEl.classList.remove('hidden');
+
+        // Ensure all text placeholders and iPhone canvases reflect latest inputs
+        updatePlaceholders();
+        const vals = getFieldValues();
+
+        // Exact A4 Portrait geometry in DXA (twips: 1 mm = 56.6929 DXA, 1 px @ 96dpi = 15 DXA)
+        // A4 Width = 210 mm (11,906 DXA) | A4 Height = 297 mm (16,838 DXA)
+        // Left & Right margins = 853 DXA (~15 mm each) => Printable width = 10,200 DXA (180 mm = 680 px)
+        const A4_PAGE_WIDTH_DXA = 11906;
+        const A4_PAGE_HEIGHT_DXA = 16838;
+        const A4_MARGIN_TB_DXA = 794; // ~14 mm top/bottom margin
+        const A4_MARGIN_LR_DXA = 853; // ~15 mm left/right margin
+        const A4_CONTENT_DXA = 10200;
+
+        const SIDE_TEXT_COL_DXA = 6800;  // 120.0 mm wide text column (Steps 1 & 6)
+        const SIDE_IMAGE_COL_DXA = 3400; // 60.0 mm wide iPhone column (Steps 1 & 6)
+        const TWO_COL_DXA = 5100;        // 90.0 mm per column (Steps 2 & 4)
+        const THREE_COL_DXA = 3400;      // 60.0 mm per column (Steps 3 & 5)
+
+        // Calibrated A4 iPhone widths (each height = width * 2.0615, preserving exact 390x804 iPhone proportions):
+        // - Side-by-side (148 x 305 px = 39.2 x 80.7 mm inside 60 mm col)
+        // - 2-up strip   (152 x 313 px = 40.2 x 82.8 mm inside 90 mm col)
+        // - 3-up strip   (138 x 285 px = 36.5 x 75.4 mm inside 60 mm col)
+        const img1  = getCanvasDocxImage('slot-step1', 148);
+        const img2a = getCanvasDocxImage('slot-step2a', 152);
+        const img2b = getCanvasDocxImage('slot-step2b', 152);
+        const img3a = getCanvasDocxImage('slot-step3a', 138);
+        const img3b = getCanvasDocxImage('slot-step3b', 138);
+        const img3c = getCanvasDocxImage('slot-step3c', 138);
+        const img4a = getCanvasDocxImage('slot-step4a', 152);
+        const img4b = getCanvasDocxImage('slot-step4b', 152);
+        const img5a = getCanvasDocxImage('slot-step5a', 138);
+        const img5b = getCanvasDocxImage('slot-step5b', 138);
+        const img5c = getCanvasDocxImage('slot-step5c', 138);
+        const img6  = getCanvasDocxImage('slot-step6', 148);
+
+        statusEl.textContent = 'Packaging A4 Word document...';
+
+        const {
+          Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+          ImageRun, WidthType, AlignmentType, BorderStyle, ShadingType, VerticalAlign, TableLayoutType
+        } = window.docx;
+
+        const FIXED_LAYOUT = TableLayoutType ? TableLayoutType.FIXED : 'fixed';
+
+        const NONE_BORDER = { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+        const NO_BORDERS = {
+          top: NONE_BORDER,
+          bottom: NONE_BORDER,
+          left: NONE_BORDER,
+          right: NONE_BORDER,
+          insideHorizontal: NONE_BORDER,
+          insideVertical: NONE_BORDER
+        };
+
+        const CARD_BORDERS = {
+          top: { style: BorderStyle.SINGLE, size: 6, color: 'E2E8F0' },
+          bottom: { style: BorderStyle.SINGLE, size: 6, color: 'E2E8F0' },
+          left: { style: BorderStyle.SINGLE, size: 6, color: 'E2E8F0' },
+          right: { style: BorderStyle.SINGLE, size: 6, color: 'E2E8F0' },
+          insideHorizontal: NONE_BORDER,
+          insideVertical: NONE_BORDER
+        };
+
+        // Helper text builders
+        const t = (text, opts = {}) => new TextRun({
+          text,
+          font: 'Calibri',
+          size: opts.size || 21, // 10.5pt
+          bold: !!opts.bold,
+          italics: !!opts.italics,
+          color: opts.color || '1E293B'
+        });
+
+        const stepHeading = (num, title) => new Paragraph({
+          spacing: { before: 120, after: 140 },
+          children: [
+            new TextRun({ text: `STEP ${num}  —  `, font: 'Calibri', size: 24, bold: true, color: '2563EB' }),
+            new TextRun({ text: title, font: 'Calibri', size: 26, bold: true, color: '0F172A' })
+          ]
+        });
+
+        const bodyPara = (runs, spacingAfter = 120) => new Paragraph({
+          spacing: { after: spacingAfter, line: 276 },
+          children: runs
+        });
+
+        const bulletItem = (runs) => new Paragraph({
+          bullet: { level: 0 },
+          spacing: { after: 90, line: 265 },
+          children: runs
+        });
+
+        const numberedItem = (num, runs) => new Paragraph({
+          spacing: { after: 95, line: 265 },
+          indent: { left: 320, hanging: 240 },
+          children: [
+            t(`${num}. `, { bold: true, color: '0F172A' }),
+            ...runs
+          ]
+        });
+
+        const imageCell = (imgObj, captionText, colWidthDxa) => new TableCell({
+          width: { size: colWidthDxa, type: WidthType.DXA },
+          borders: NO_BORDERS,
+          verticalAlign: VerticalAlign.TOP,
+          margins: { top: 100, bottom: 100, left: 80, right: 80 },
+          children: [
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              spacing: { after: 80 },
+              children: imgObj ? [
+                new ImageRun({
+                  data: imgObj.data,
+                  transformation: { width: imgObj.width, height: imgObj.height },
+                  type: 'png'
+                })
+              ] : []
+            }),
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              spacing: { after: 40 },
+              children: [t(captionText, { size: 18, bold: true, color: '475569' })]
+            })
+          ]
+        });
+
+        // Full-width A4 callout box (10,200 DXA)
+        const calloutBox = (bgHex, borderHex, childrenParas) => new Table({
+          layout: FIXED_LAYOUT,
+          width: { size: A4_CONTENT_DXA, type: WidthType.DXA },
+          columnWidths: [A4_CONTENT_DXA],
+          rows: [
+            new TableRow({
+              children: [
+                new TableCell({
+                  width: { size: A4_CONTENT_DXA, type: WidthType.DXA },
+                  shading: { fill: bgHex, type: ShadingType.CLEAR, color: 'auto' },
+                  borders: {
+                    top: { style: BorderStyle.SINGLE, size: 6, color: borderHex },
+                    bottom: { style: BorderStyle.SINGLE, size: 6, color: borderHex },
+                    left: { style: BorderStyle.SINGLE, size: 18, color: borderHex },
+                    right: { style: BorderStyle.SINGLE, size: 6, color: borderHex }
+                  },
+                  margins: { top: 120, bottom: 120, left: 180, right: 180 },
+                  children: childrenParas
+                })
+              ]
+            })
+          ]
+        });
+
+        // Multi-column screenshot strip with explicit A4 DXA column widths
+        const screenshotStrip = (cells, colWidthsDxa) => new Table({
+          layout: FIXED_LAYOUT,
+          width: { size: A4_CONTENT_DXA, type: WidthType.DXA },
+          columnWidths: colWidthsDxa,
+          borders: CARD_BORDERS,
+          rows: [
+            new TableRow({
+              cantSplit: true,
+              children: cells
+            })
+          ]
+        });
+
+        // Side-by-side text + single screenshot card for Steps 1 & 6 (6,700 DXA text + 3,500 DXA image = 10,200 DXA)
+        const sideBySideStepTable = (textChildren, imgObj, captionText) => new Table({
+          layout: FIXED_LAYOUT,
+          width: { size: A4_CONTENT_DXA, type: WidthType.DXA },
+          columnWidths: [SIDE_TEXT_COL_DXA, SIDE_IMAGE_COL_DXA],
+          borders: CARD_BORDERS,
+          rows: [
+            new TableRow({
+              cantSplit: true,
+              children: [
+                new TableCell({
+                  width: { size: SIDE_TEXT_COL_DXA, type: WidthType.DXA },
+                  borders: NO_BORDERS,
+                  verticalAlign: VerticalAlign.TOP,
+                  margins: { top: 140, bottom: 140, left: 180, right: 160 },
+                  children: textChildren
+                }),
+                imageCell(imgObj, captionText, SIDE_IMAGE_COL_DXA)
+              ]
+            })
+          ]
+        });
+
+        const spacer = () => new Paragraph({ spacing: { after: 160 }, children: [] });
+
+        // Build A4 Word document
+        const doc = new Document({
+          sections: [
+            {
+              properties: {
+                page: {
+                  size: {
+                    width: A4_PAGE_WIDTH_DXA,
+                    height: A4_PAGE_HEIGHT_DXA
+                  },
+                  margin: {
+                    top: A4_MARGIN_TB_DXA,
+                    right: A4_MARGIN_LR_DXA,
+                    bottom: A4_MARGIN_TB_DXA,
+                    left: A4_MARGIN_LR_DXA
+                  }
+                }
+              },
+              children: [
+                // Badge + Title + Intro
+                new Paragraph({
+                  spacing: { after: 80 },
+                  children: [
+                    new TextRun({
+                      text: 'EXECUTIVE MOBILE BRIEFING • iOS',
+                      font: 'Calibri',
+                      size: 18,
+                      bold: true,
+                      color: '475569'
+                    })
+                  ]
+                }),
+                new Paragraph({
+                  spacing: { after: 120 },
+                  children: [
+                    new TextRun({
+                      text: `Setting Up ${vals.org} Email & Google Apps on Your iPhone`,
+                      font: 'Calibri',
+                      size: 36,
+                      bold: true,
+                      color: '0F172A'
+                    })
+                  ]
+                }),
+                bodyPara([
+                  t('Before your iPhone opens your work Gmail, Calendar, or Google Drive, Apple requires a one-time workplace security pass (called a '),
+                  t('Profile', { bold: true }),
+                  t('). Follow the six visual steps below—the setup takes about three minutes.')
+                ], 240),
+
+                // STEP 1 (Fixed A4 side-by-side: 118.2 mm text | 61.8 mm screenshot)
+                sideBySideStepTable(
+                  [
+                    stepHeading(1, 'Turn on your work account inside Gmail'),
+                    bodyPara([t('Open the '), t('Gmail', { bold: true }), t(' app on your iPhone.')]),
+                    bulletItem([
+                      t('If you only use Gmail for work: ', { bold: true }),
+                      t('Sign in with '),
+                      t(vals.email, { bold: true }),
+                      t('. If a dark box titled '),
+                      t('Device Policy Alert', { italics: true }),
+                      t(' pops up, tap '),
+                      t('NEXT', { bold: true }),
+                      t('.')
+                    ]),
+                    bulletItem([
+                      t('If your personal Gmail is already open on your phone: ', { bold: true }),
+                      t('Tap your circular profile photo or initial in the '),
+                      t('top-right corner', { bold: true }),
+                      t(' of Gmail, then tap '),
+                      t('Manage accounts on this device', { bold: true }),
+                      t('.')
+                    ]),
+                    bulletItem([
+                      t('Find your official work email address and tap the slider next to '),
+                      t('Use in Gmail', { bold: true }),
+                      t(' so it turns '),
+                      t('blue (ON)', { bold: true }),
+                      t('. '),
+                      t('(If your work email is not listed yet, tap + Add another account first.)', { italics: true })
+                    ]),
+                    bulletItem([
+                      t('Tap '),
+                      t('Done', { bold: true }),
+                      t(' in the top-right corner.')
+                    ])
+                  ],
+                  img1,
+                  'Switch "Use in Gmail" ON, then tap Done'
+                ),
+                spacer(),
+
+                // STEP 2
+                stepHeading(2, 'Open "Google Device Policy" and tap the blue arrow'),
+                bodyPara([
+                  t('As soon as you switch on your work email, Gmail will ask for the '),
+                  t('Google Device Policy', { bold: true }),
+                  t(' app:')
+                ]),
+                numberedItem(1, [
+                  t('A white box will pop up over Gmail saying '),
+                  t('"Install the latest version of Google Device Policy so you can access your work data." ', { italics: true }),
+                  t('Tap '),
+                  t('APP STORE', { bold: true }),
+                  t('.')
+                ]),
+                numberedItem(2, [
+                  t('In the App Store, tap '),
+                  t('Get', { bold: true }),
+                  t(' (if installing for the first time) or '),
+                  t('Open', { bold: true }),
+                  t(' (if it is already on your iPhone).')
+                ]),
+                numberedItem(3, [
+                  t('Inside the '),
+                  t('Install profile', { bold: true }),
+                  t(' screen, tap the '),
+                  t('round blue circle with the white downward arrow', { bold: true }),
+                  t(' on the right side. '),
+                  t('(If Google briefly asks you to confirm your account, tap Continue.)', { italics: true })
+                ]),
+                screenshotStrip(
+                  [
+                    imageCell(img2a, '2A. Tap APP STORE, then tap Open', TWO_COL_DXA),
+                    imageCell(img2b, '2B. Tap the round blue downward arrow', TWO_COL_DXA)
+                  ],
+                  [TWO_COL_DXA, TWO_COL_DXA]
+                ),
+                spacer(),
+
+                // STEP 3
+                new Paragraph({ pageBreakBefore: true, children: [] }),
+                stepHeading(3, 'Download the security pass in Safari'),
+                bodyPara([
+                  t('Apple only permits iPhone security passes to download inside '),
+                  t('Safari', { bold: true }),
+                  t(' (Apple\'s built-in compass browser). Depending on your phone\'s browser setup, follow '),
+                  t('Path A', { bold: true }),
+                  t(' or '),
+                  t('Path B', { bold: true }),
+                  t(':')
+                ]),
+                calloutBox('ECFDF5', '10B981', [
+                  bodyPara([
+                    t('Path A — If Safari opens on its own and asks "Do you want to allow this?":', { bold: true, color: '064E3B' })
+                  ], 60),
+                  bodyPara([
+                    t('Tap '),
+                    t('Allow', { bold: true }),
+                    t(', tap '),
+                    t('Close', { bold: true }),
+                    t(' on the '),
+                    t('Profile Downloaded', { italics: true }),
+                    t(' message, and go straight to '),
+                    t('Step 4', { bold: true }),
+                    t('. '),
+                    t('(Do not tap the blue "Download profile" button again once the pop-up has appeared.)', { italics: true })
+                  ], 0)
+                ]),
+                new Paragraph({ spacing: { after: 100 }, children: [] }),
+                calloutBox('FFFBEB', 'F59E0B', [
+                  bodyPara([
+                    t('Path B — If you see a white screen saying "Copy the link from the URL bar to the Safari app":', { bold: true, color: '78350F' })
+                  ], 60),
+                  bodyPara([
+                    t('Your phone opened the link inside Google Chrome instead of Safari. Move it to Safari in three quick taps:')
+                  ], 80),
+                  numberedItem(1, [
+                    t('Copy the link: ', { bold: true }),
+                    t('Press and hold your finger for two seconds on the top address pill (ios-mdm.googleusercontent.com), then tap '),
+                    t('Copy link', { bold: true }),
+                    t('.')
+                  ]),
+                  numberedItem(2, [
+                    t('Paste into Safari\'s bottom address bar: ', { bold: true }),
+                    t('Open '),
+                    t('Safari', { bold: true }),
+                    t(' (the blue compass icon on your Home Screen). Tap the '),
+                    t('Search or enter website name', { bold: true }),
+                    t(' bar at the '),
+                    t('very bottom', { bold: true }),
+                    t(' of the screen—'),
+                    t('not', { bold: true }),
+                    t(' the Google search box in the middle of the page. Tap again, tap '),
+                    t('Paste', { bold: true }),
+                    t(' (or '),
+                    t('Paste and Go', { bold: true }),
+                    t('), and press the blue '),
+                    t('arrow (→)', { bold: true }),
+                    t(' key on your keyboard.')
+                  ]),
+                  numberedItem(3, [
+                    t('Tap Download & Allow: ', { bold: true }),
+                    t('When '),
+                    t('Installing your profile', { italics: true }),
+                    t(' opens in Safari, tap the blue '),
+                    t('Download profile', { bold: true }),
+                    t(' button once, tap '),
+                    t('Allow', { bold: true }),
+                    t(', and tap '),
+                    t('Close', { bold: true }),
+                    t('.')
+                  ])
+                ]),
+                new Paragraph({ spacing: { after: 100 }, children: [] }),
+                screenshotStrip(
+                  [
+                    imageCell(img3a, '3A. Hold top bar & tap Copy link', THREE_COL_DXA),
+                    imageCell(img3b, '3B. Paste in Safari\'s bottom bar', THREE_COL_DXA),
+                    imageCell(img3c, '3C. Tap Allow, then tap Close', THREE_COL_DXA)
+                  ],
+                  [THREE_COL_DXA, THREE_COL_DXA, THREE_COL_DXA]
+                ),
+                spacer(),
+
+                // STEP 4
+                stepHeading(4, 'Locate the pass inside your iPhone Settings'),
+                bodyPara([
+                  t('Swipe up to leave Safari and tap the grey '),
+                  t('Settings', { bold: true }),
+                  t(' gear icon on your iPhone Home Screen:')
+                ]),
+                bulletItem([
+                  t('Shortcut at the top (4A): ', { bold: true }),
+                  t('Look right underneath your name and Apple ID banner near the top of Settings and tap '),
+                  t('Profile Downloaded', { bold: true }),
+                  t('.')
+                ]),
+                bulletItem([
+                  t('If "Profile Downloaded" is not at the top (4B): ', { bold: true }),
+                  t('Scroll down slightly in Settings, tap '),
+                  t('General', { bold: true }),
+                  t(', tap '),
+                  t('VPN & Device Management', { bold: true }),
+                  t(', and tap '),
+                  t('Google Workspace device policy payload profile', { bold: true }),
+                  t(' under '),
+                  t('Downloaded Profile', { italics: true }),
+                  t('.')
+                ]),
+                screenshotStrip(
+                  [
+                    imageCell(img4a, '4A. Top of Settings: Profile Downloaded', TWO_COL_DXA),
+                    imageCell(img4b, '4B. Or via General → VPN & Device Management', TWO_COL_DXA)
+                  ],
+                  [TWO_COL_DXA, TWO_COL_DXA]
+                ),
+                spacer(),
+
+                // STEP 5
+                new Paragraph({ pageBreakBefore: true, children: [] }),
+                stepHeading(5, 'Enter your iPhone PIN and approve Apple\'s warning'),
+                numberedItem(1, [
+                  t('On the '),
+                  t('Install Profile', { bold: true }),
+                  t(' screen, tap the blue '),
+                  t('Install', { bold: true }),
+                  t(' button in the top-right corner.')
+                ]),
+                numberedItem(2, [
+                  t('Type your 6-digit iPhone unlock passcode ', { bold: true }),
+                  t('(the number code you use to unlock your phone—Apple does not use Face ID on this screen). '),
+                  t('If IT is assisting you on a call, pause screen sharing briefly while typing your PIN.', { italics: true })
+                ]),
+                numberedItem(3, [
+                  t('A '),
+                  t('Warning', { bold: true }),
+                  t(' screen will appear stating that an administrator can collect data or remotely erase your iPhone. Apple displays this exact same generic legal text to every company worldwide; in practice, this pass simply lets '),
+                  t(vals.org, { bold: true }),
+                  t(' protect company mail and clear work data if a phone is ever lost. Tap '),
+                  t('Install', { bold: true }),
+                  t(' in the top-right corner.')
+                ]),
+                numberedItem(4, [
+                  t('A small box titled '),
+                  t('Remote Management', { bold: true }),
+                  t(' will pop up with '),
+                  t('Trust', { bold: true, color: 'DC2626' }),
+                  t(' printed in red letters. Even though red normally signals a stop button, '),
+                  t('Trust', { bold: true }),
+                  t(' is Apple\'s confirmation button here. Tap '),
+                  t('Trust', { bold: true }),
+                  t('.')
+                ]),
+                numberedItem(5, [
+                  t('Wait two seconds until the top reads '),
+                  t('Profile Installed', { bold: true }),
+                  t(', then tap the blue '),
+                  t('checkmark (✓)', { bold: true }),
+                  t(' in the top-right corner.')
+                ]),
+                screenshotStrip(
+                  [
+                    imageCell(img5a, '5A. Tap Install & enter iPhone PIN', THREE_COL_DXA),
+                    imageCell(img5b, '5B. Tap Install, then red Trust', THREE_COL_DXA),
+                    imageCell(img5c, '5C. Tap the blue checkmark (✓)', THREE_COL_DXA)
+                  ],
+                  [THREE_COL_DXA, THREE_COL_DXA, THREE_COL_DXA]
+                ),
+                spacer(),
+
+                // STEP 6 (Fixed A4 side-by-side: 118.2 mm text | 61.8 mm screenshot)
+                sideBySideStepTable(
+                  [
+                    stepHeading(6, 'Quick IT approval & opening your work inbox'),
+                    bodyPara([
+                      t('As a final safeguard, your work inbox remains locked behind the scenes until IT approves your handset in the company console.')
+                    ]),
+                    numberedItem(1, [
+                      t('Notify IT for instant approval: ', { bold: true }),
+                      t('Message or call '),
+                      t(vals.it, { bold: true }),
+                      t('. If you open Gmail before IT clicks approve, you will see a notice stating '),
+                      t('"Your administrator must approve this device"', { italics: true }),
+                      t('—that confirms your installation succeeded.')
+                    ]),
+                    numberedItem(2, [
+                      t('Open your work inbox: ', { bold: true }),
+                      t('Once IT confirms approval (typically under two minutes), open '),
+                      t('Gmail', { bold: true }),
+                      t('. If your personal inbox is still displayed, tap your top-right '),
+                      t('profile circle → Manage accounts on this device', { bold: true }),
+                      t(', verify that '),
+                      t('Use in Gmail', { bold: true }),
+                      t(' is switched '),
+                      t('ON (blue)', { bold: true }),
+                      t(' under your official ID, and tap '),
+                      t('Done', { bold: true }),
+                      t('.')
+                    ]),
+                    bodyPara([
+                      t('What changes on your phone once active: ', { bold: true, size: 19 }),
+                      t('Your official email, Calendar, and Drive work as normal, while copying work text into personal apps or sharing company attachments out to WhatsApp or personal Gmail is restricted automatically to protect company data.', { size: 19, color: '475569' })
+                    ], 0)
+                  ],
+                  img6,
+                  'Normal holding message until IT clicks Approve'
+                )
+              ]
+            }
+          ]
+        });
+
+        const blob = await Packer.toBlob(doc);
+        const downloadUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = vals.fileSlug;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(downloadUrl), 4000);
+
+        statusEl.textContent = `✓ Downloaded A4 ${vals.fileSlug}`;
+      } catch (err) {
+        console.error('DOCX export error:', err);
+        statusEl.textContent = 'Could not generate .docx — please check your connection and try again.';
+      } finally {
+        btn.disabled = false;
+        btnLabel.textContent = 'Download as Word (.docx)';
+      }
+    }
+
+    // Render all 11 iPhone screens immediately on load
+    window.addEventListener('DOMContentLoaded', renderAllScreens);
+    renderAllScreens();
+  </script>
+
+</body>
+</html>
